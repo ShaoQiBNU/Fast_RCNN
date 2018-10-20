@@ -43,9 +43,7 @@ Fast-RCNN详解
 
 ![image](https://github.com/ShaoQiBNU/Fast_RCNN/blob/master/images/1)
 
-img2
-
-Img3
+![image](https://github.com/ShaoQiBNU/Fast_RCNN/blob/master/images/2.png)
 
 ```
 1. 任意size图片输入CNN网络，得到feature map
@@ -73,5 +71,5 @@ Img3
 
 >  首先对于pretrained ImageNet CNN，把最后一个pooling layer改为ROI pooling layer，并且设置H和W使得spatial pooling feature的维度和全连接层第一层的结点数一致。把网络的最后一个全连接层和softmax层换成两个输出层（object分类和bbox回归）。本文采用VGG16网络，将该网络最后一个pool层替换为ROI pooling layer，由于VGG16最后一个pool层出来的大小为7x7，所以ROI pooling layer需要将所有的ROI池化成7x7的特征图，然后feed进全连接层。
 
-img
+![image](https://github.com/ShaoQiBNU/Fast_RCNN/blob/master/images/3.png)
 
