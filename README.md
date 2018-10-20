@@ -41,7 +41,7 @@ Fast-RCNN详解
 
 > Fast-RCNN设计思想如图所示：
 
-img1
+![image](https://github.com/ShaoQiBNU/Fast_RCNN/blob/master/images/1)
 
 img2
 
