@@ -64,9 +64,18 @@ Fast-RCNN详解
 ## (一) ROI pooling layer
 
 > ROI pooling layer使用最大池化将任何有效区域内的特征转化成一个小的带有固定空间范围HxW（比如7×7）的特征图，其中H和W是层的超参数，和任何特定的ROI无关。本文中，一个ROI是针对卷积特征图的一个矩形窗口。每个ROI定义成四元组（r, c, h, w），左上角为（r, c），高和宽是（h, w）。
->
-> ROI最大池化将hxw的ROI窗口分成HxW的子窗口网格，每个子窗口大小大约是h/H x w/W。然后每个子窗口进行最大池化放入网格对应的单元，池化以标准最大池化的形式独立应用在每个特征图的channel上。ROI层是SPPnets中的空间金字塔层的一个特例，因为是一个一层的金字塔结构。
 
+> ROI最大池化将hxw的ROI窗口分成HxW的子窗口网格，每个子窗口大小大约是h/H x w/W。然后每个子窗口进行最大池化放入网格对应的单元，池化以标准最大池化的形式独立应用在每个特征图的channel上。如图所示：
+
+![image](https://github.com/ShaoQiBNU/Fast_RCNN/blob/master/images/4)
+
+> 上面这张图说明了SPP与RoI pooling的区别，其实RoI pooling是SPP的一种简化，原本SPP是一种多尺度的池化操作，最后将三个尺度的特征做串接作为全连接层的输入，而RoI pooling只选择了其中一种尺度，将建议框做坐标变化后的尺寸的长和宽，平均分为W份和H份，在每一份中使用最大池化，最后产生WxH个bin，这样做有下面几个好处：
+
+ ```
+ 1.统一输出维度，这个是必须的。 
+2.相比于SPP-Net，RoI pooling的维度更少，假设RoI pooling选择了4x4的话，那么维度就可以从21个bin降低为16个，虽然这样看来降低的并不多，但是不要忘了特征还有厚度，如果厚度是256的话，那么降维就比较可观了。 
+3.RoI pooling不再是多尺度的池化，这样一来梯度回传就会更方便，有利于Fast R-CNN实现end-to-end的训练。
+ ```
 ## (二) 预训练网络初始化
 
 >  首先对于pretrained ImageNet CNN，把最后一个pooling layer改为ROI pooling layer，并且设置H和W使得spatial pooling feature的维度和全连接层第一层的结点数一致。把网络的最后一个全连接层和softmax层换成两个输出层（object分类和bbox回归）。本文采用VGG16网络，将该网络最后一个pool层替换为ROI pooling layer，由于VGG16最后一个pool层出来的大小为7x7，所以ROI pooling layer需要将所有的ROI池化成7x7的特征图，然后feed进全连接层。
